@@ -1,4 +1,4 @@
-# Graphs FAQ
+# Graphs FAQ 
 
 ## Contents
 
