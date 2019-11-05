@@ -1,16 +1,3 @@
-class Queue():
-    def __init__(self):
-        self.queue = []
-    def enqueue(self, value):
-        self.queue.append(value)
-    def dequeue(self):
-        if self.size() > 0:
-            return self.queue.pop(0)
-        else:
-            return None
-    def size(self):
-        return len(self.queue)
-
 class Stack():
     def __init__(self):
         self.stack = []
@@ -83,7 +70,6 @@ def earliest_ancestor(ancestors, starting_node):
         graph.add_edge(j,i)
 
     # get list of all possible earliest ancestors to use as destinations
-    #print(graph.vertices)
     earlies = []
     for vertex in graph.vertices:
         if len(graph.vertices[vertex]) == 0:
@@ -94,16 +80,28 @@ def earliest_ancestor(ancestors, starting_node):
         return -1
 
     # run a dfs from starting index to each of the "earlies" destinations
+    # save all paths in a list to compare in next step
+    paths = []
     for dude in earlies:
+        paths.append(graph.dfs(starting_node, dude))
+    # remove Nones from path list
+    valid_paths = [x for x in paths if x is not None]
 
-    # compare each path
-    # select longest path if there is one, and return last item in path
-    # if not, select path with lower destination number
-    # return the last item of chosen path
+    # find longest path
+    longest_path = max(valid_paths, key = len)
+
+    # if there is a longest path, return last value in that path
+    if longest_path:
+        return longest_path[-1]
+    else:
+        # if tie, return path with lowest numeric id for ancestor
+        min_ancestors = []
+        for path in valid_paths:
+                min_ancestors.append(path[-1])
+        return min(min_ancestors)
 
 
 
 
-
-test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
-earliest_ancestor(test_ancestors, 1)
+#test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
+#earliest_ancestor(test_ancestors, 3)
