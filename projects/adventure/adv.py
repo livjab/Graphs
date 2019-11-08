@@ -51,93 +51,74 @@ traversalPath = []
 direction = random.choice(player.currentRoom.getExits())
 player.travel(direction)
 traversalPath.append(direction)
-print("Start by heading: ", direction)
-print("Current room: ", player.currentRoom.id)
 
-while len(traversalPath) < 3000:
+def right_hand_walk(direction, current_room):
+    traveled = 0
+    while traveled < 60:
 
-    # keep right hand on wall
-    prev_direction = direction
-    print("Prev direction: ", direction)
+        # keep track of previous direction to determine next move
+        prev_direction = direction
 
-    if prev_direction == 'w':
-        go_right = 'n'
-        go_straight = 'w'
-        go_left = 's'
-        go_back = 'e'
-    elif prev_direction == 'n':
-        go_right = 'e'
-        go_straight = 'n'
-        go_left = 'w'
-        go_back = 's'
-    elif prev_direction == 'e':
-        go_right = 's'
-        go_straight = 'e'
-        go_left = 'n'
-        go_back = 'w'
-    else: # if prev_direction == 's'
-        go_right = 'w'
-        go_straight = 's'
-        go_left = 'e'
-        go_back = 'n'
+        if prev_direction == 'w':
+            go_right = 'n'
+            go_straight = 'w'
+            go_left = 's'
+            go_back = 'e'
+        elif prev_direction == 'n':
+            go_right = 'e'
+            go_straight = 'n'
+            go_left = 'w'
+            go_back = 's'
+        elif prev_direction == 'e':
+            go_right = 's'
+            go_straight = 'e'
+            go_left = 'n'
+            go_back = 'w'
+        else: # if prev_direction == 's'
+            go_right = 'w'
+            go_straight = 's'
+            go_left = 'e'
+            go_back = 'n'
 
-    exits = player.currentRoom.getExits()
-    print("Current room exits: ", exits)
+        exits = player.currentRoom.getExits()
+        # turn right if possible
+        if go_right in exits:
+            player.travel(go_right)
+            print("Moving right")
+            traversalPath.append(go_right)
+            traveled += 1
+            direction = go_right
+            print("Current room: ", player.currentRoom.id)
+        # if can't, go straigh
+        elif go_straight in exits:
+            player.travel(go_straight)
+            print("Moving straight")
+            traversalPath.append(go_straight)
+            traveled += 1
+            direction = go_straight
+            print("Current room: ", player.currentRoom.id)
+        # if can't, go left
+        elif go_left in exits:
+            player.travel(go_left)
+            print("Moving left")
+            traversalPath.append(go_left)
+            traveled += 1
+            direction = go_left
+            print("Current room: ", player.currentRoom.id)
+        # if nowhere to go, turn back
+        else: # go backwards
+            player.travel(go_back)
+            print("Moving backwards")
+            traversalPath.append(go_back)
+            traveled += 1
+            direction = go_back
+            print("Current room: ", player.currentRoom.id)
 
-    # always turn right if possible
-    if go_right in exits:
-        player.travel(go_right)
-        print("Moving right")
-        traversalPath.append(go_right)
-        direction = go_right
-        print("Current room: ", player.currentRoom.id)
-
-    elif go_straight in exits:
-        player.travel(go_straight)
-        print("Moving straight")
-        traversalPath.append(go_straight)
-        direction = go_straight
-        print("Current room: ", player.currentRoom.id)
-
-    elif go_left in exits:
-        player.travel(go_left)
-        print("Moving left")
-        traversalPath.append(go_left)
-        direction = go_left
-        print("Current room: ", player.currentRoom.id)
-
-    else: # go backwards
-        player.travel(go_back)
-        print("Moving backwards")
-        traversalPath.append(go_back)
-        direction = go_back
-        print("Current room: ", player.currentRoom.id)
-
-
-
-    # # Create an empty stack and push the starting room
-    # s = Stack()
-    # s.push(current_room)
-    # # Create a Set to store visited rooms
-    # visited = set()
-    # # While the stack is not empty...
-    # while s.size() > 0:
-    #     # Pop the first room
-    #     v = s.pop()
-    #     # If that room has not been visited...
-    #     if v not in visited:
-    #         # Mark it as visited...
-    #         traversalPath.append(v)
-    #         visited.add(v)
-    #         # Then add all of its neighbors to the top of the stack
-    #         for neighbor in roomGraph[v]:
-    #             s.push(neighbor)
-
-
-
-# Fill this out
-#traversalPath = []
-#['w', 'n', 'w', 'w', 'w', 's', 's', 's', 'w', 'n', 'w', 'w', 'w', 'e', 'e', 'e', 's', 'w', 'w', 's', 'w', 'n', 's', 'e', 'n', 'e', 'e', 'e', 's', 'w', 'w', 'e', 's', 'w', 'e', 'n', 'e', 's', 's', 'w', 'w', 'w', 'n', 's', 'w', 'n', 'w', 'n', 'n', 'w', 'n', ]
+# right hand walk gets stuck in some loops,
+# to avoid this, change path every 60 moves
+while len(traversalPath) < 1940:
+    direction = random.choice(player.currentRoom.getExits())
+    right_hand_walk(direction, player.currentRoom.id)
 
 
 
@@ -154,6 +135,7 @@ if len(visited_rooms) == len(roomGraph):
     print(f"TESTS PASSED: {len(traversalPath)} moves, {len(visited_rooms)} rooms visited")
 else:
     print("TESTS FAILED: INCOMPLETE TRAVERSAL")
+    print("Number of moves: ", len(traversalPath))
     print(f"{len(roomGraph) - len(visited_rooms)} unvisited rooms")
 
 
